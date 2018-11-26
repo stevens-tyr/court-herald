@@ -16,7 +16,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20181120190819-8f65e3013eba // indirect
 	golang.org/x/time v0.0.0-20181108054448-85acf8d2951c // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	k8s.io/api v0.0.0-20181121071145-b7bd5f2d334c // indirect
+	k8s.io/api v0.0.0-20181121071145-b7bd5f2d334c
 	k8s.io/apimachinery v0.0.0-20181121071008-d4f83ca2e260
 	k8s.io/client-go v9.0.0+incompatible
 	k8s.io/klog v0.1.0 // indirect
