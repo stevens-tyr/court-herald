@@ -8,7 +8,7 @@ import (
 
 // New spins up a new kubernetes job for a submission
 func New(c *gin.Context) {
-	jobName, err := tyrk8s.CreateJob(c.Param("subid"))
+	newJob, err := tyrk8s.CreateJob(c.Param("subid"))
 	if err != nil {
 		c.JSON(500, gin.H{
 			"status_code": 500,
@@ -17,9 +17,9 @@ func New(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(200, gin.H{
-		"status_code": 200,
+	c.JSON(201, gin.H{
+		"status_code": 201,
 		"message":     "Grader Job Created",
-		"jobName":     jobName,
+		"job":         newJob,
 	})
 }

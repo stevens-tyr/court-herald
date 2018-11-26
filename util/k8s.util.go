@@ -40,13 +40,13 @@ func GetClient() (client *kubernetes.Clientset, err error) {
 }
 
 // CreateJob creates a k8s job based on the submission id
-func CreateJob(id string) (job string, err error) {
+func CreateJob(id string) (newJob *batchv1.Job, err error) {
 	falseVal := false //bc spec needs a *bool
 	jobName := fmt.Sprintf("grader-job-%s", id)
 	podName := fmt.Sprintf("grader-pod-%s", id)
 	client, err := GetClient()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	jobsClient := client.BatchV1().Jobs("default")
 	batchJob := &batchv1.Job{
@@ -88,10 +88,10 @@ func CreateJob(id string) (job string, err error) {
 		},
 	}
 
-	newJob, err := jobsClient.Create(batchJob)
+	newJob, err = jobsClient.Create(batchJob)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return newJob.Name, nil
+	return newJob, nil
 }
