@@ -2,6 +2,7 @@ module court-herald
 
 require (
 	cloud.google.com/go v0.33.1 // indirect
+	github.com/gin-contrib/cors v0.0.0-20181008113111-488de3ec974f // indirect
 	github.com/gin-gonic/gin v1.3.0
 	github.com/gogo/protobuf v1.1.1 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
@@ -10,6 +11,7 @@ require (
 	github.com/googleapis/gnostic v0.2.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20181110185634-c63ab54fda8f // indirect
 	github.com/imdario/mergo v0.3.6 // indirect
+	github.com/itsjamie/gin-cors v0.0.0-20160420130702-97b4a9da7933
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/stevens-tyr/tyr-gin v0.0.0-20181122010146-33dd412416f3

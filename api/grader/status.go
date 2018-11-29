@@ -12,7 +12,6 @@ import (
 
 // Status gets the status of the Kubernetes Job
 func Status(c *gin.Context) {
-
 	client, err := tyrk8s.GetClient()
 
 	jobsClient := client.BatchV1().Jobs("default")
@@ -20,11 +19,13 @@ func Status(c *gin.Context) {
 	jobName := fmt.Sprintf("grader-job-%s", c.Param("subid"))
 	graderJob, err := jobsClient.Get(jobName, metav1.GetOptions{})
 	if err != nil {
+		fmt.Println("code:", err)
 		c.JSON(500, gin.H{
 			"status_code": 500,
 			"message":     "Unable to retrieve information about Job.",
 			"err":         err,
 		})
+		return
 	}
 
 	podList, err := client.CoreV1().Pods("default").List(metav1.ListOptions{
@@ -36,6 +37,16 @@ func Status(c *gin.Context) {
 			"message":     "Unable to retrieve Pod utilized by Job.",
 			"err":         err,
 		})
+		return
+	}
+
+	if len(podList.Items) < 1 {
+		c.JSON(500, gin.H{
+			"status_code": 500,
+			"message":     "No job found for submission.",
+			"err":         err,
+		})
+		return
 	}
 
 	jobPod := podList.Items[0]

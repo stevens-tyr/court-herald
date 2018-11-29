@@ -70,8 +70,8 @@ func CreateJob(id string) (newJob *batchv1.Job, err error) {
 					Containers: []apiv1.Container{
 						{
 							Name:    podName,
-							Image:   "perl",
-							Command: []string{"perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"},
+							Image:   "robherley/test-grader:1.2",
+							// Command: []string{"perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"},
 							SecurityContext: &apiv1.SecurityContext{
 								Privileged: &falseVal,
 							},

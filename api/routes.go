@@ -2,8 +2,10 @@ package api
 
 import (
 	"court-herald/api/grader"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/itsjamie/gin-cors"
 	tyrgin "github.com/stevens-tyr/tyr-gin"
 )
 
@@ -13,8 +15,17 @@ func SetUp() *gin.Engine {
 
 	server.MaxMultipartMemory = 50 << 20
 
-	//server.Use(tyrgin.Logger())
+	// server.Use(tyrgin.Logger())
 	server.Use(gin.Recovery())
+	server.Use(cors.Middleware(cors.Config{
+		Origins:         "*",
+		Methods:         "GET, PUT, POST, DELETE",
+		RequestHeaders:  "Origin, Authorization, Content-Type",
+		ExposedHeaders:  "",
+		MaxAge:          50 * time.Second,
+		Credentials:     true,
+		ValidateHeaders: false,
+	}))
 
 	var graderEndpoints = []tyrgin.APIAction{
 		tyrgin.NewRoute(grader.New, ":subid/new", false, tyrgin.POST),
