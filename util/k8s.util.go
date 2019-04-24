@@ -1,15 +1,17 @@
 package tyrk8s
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	models "court-herald/models"
 
 	batchv1 "k8s.io/api/batch/v1"
 	apiv1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
-	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp" // req for gcp auth
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 )
@@ -39,11 +41,22 @@ func GetClient() (client *kubernetes.Clientset, err error) {
 	return client, nil
 }
 
-// CreateJob creates a k8s job based on the submission id
-func CreateJob(id string) (newJob *batchv1.Job, err error) {
+// CreateJob creates a k8s job based on the request data
+func CreateJob(requestData models.RequestData) (newJob *batchv1.Job, err error) {
+	sub := requestData.Submission
+	tests := requestData.Tests
+
+	fmt.Printf("SUB: %+v\n", sub)
+	fmt.Printf("TESTS: %+v\n", tests)
+
+	testsBytes, err := json.Marshal(tests)
+	if err != nil {
+		return nil, err
+	}
+
 	falseVal := false //bc spec needs a *bool
-	jobName := fmt.Sprintf("grader-job-%s", id)
-	podName := fmt.Sprintf("grader-pod-%s", id)
+	jobName := fmt.Sprintf("grader-job-%s", sub.ID.Hex())
+	podName := fmt.Sprintf("grader-pod-%s", sub.ID.Hex())
 	client, err := GetClient()
 	if err != nil {
 		return nil, err
@@ -55,11 +68,6 @@ func CreateJob(id string) (newJob *batchv1.Job, err error) {
 			Labels: make(map[string]string),
 		},
 		Spec: batchv1.JobSpec{
-			// Optional: Parallelism:,
-			// Optional: Completions:,
-			// Optional: ActiveDeadlineSeconds:,
-			// Optional: Selector:,
-			// Optional: ManualSelector:,
 			Template: apiv1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:   jobName,
@@ -70,14 +78,21 @@ func CreateJob(id string) (newJob *batchv1.Job, err error) {
 					Containers: []apiv1.Container{
 						{
 							Name:    podName,
-							Image:   "robherley/test-grader:1.2",
-							// Command: []string{"perl", "-Mbignum=bpi", "-wle", "print bpi(2000)"},
+							Image:   "ubuntu",
+							Command: []string{"env"},
 							SecurityContext: &apiv1.SecurityContext{
 								Privileged: &falseVal,
 							},
 							ImagePullPolicy: apiv1.PullPolicy(apiv1.PullIfNotPresent),
-							Env:             []apiv1.EnvVar{},
-							VolumeMounts:    []apiv1.VolumeMount{},
+							Env: []apiv1.EnvVar{
+								{Name: "API_URI", Value: os.Getenv("BACKEND_URL")},
+								{Name: "SUB_ID", Value: sub.ID.Hex()},
+								{Name: "ASSIGN_ID", Value: sub.AssignmentID.Hex()},
+								{Name: "BUILD_CMD", Value: requestData.TestBuildCMD},
+								{Name: "TEST_DATA", Value: string(testsBytes)},
+								{Name: "JOB_SECRET", Value: os.Getenv("JOB_SECRET")},
+							},
+							VolumeMounts: []apiv1.VolumeMount{},
 						},
 					},
 					RestartPolicy:    apiv1.RestartPolicyNever,

@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/itsjamie/gin-cors"
+	cors "github.com/itsjamie/gin-cors"
 	tyrgin "github.com/stevens-tyr/tyr-gin"
 )
 
@@ -28,12 +28,11 @@ func SetUp() *gin.Engine {
 	}))
 
 	var graderEndpoints = []tyrgin.APIAction{
-		tyrgin.NewRoute(grader.New, ":subid/new", false, tyrgin.POST),
-		tyrgin.NewRoute(grader.Results, ":subid/results", false, tyrgin.GET),
-		tyrgin.NewRoute(grader.Status, ":subid/status", false, tyrgin.GET),
+		tyrgin.NewRoute(grader.New, ":subid/new", tyrgin.POST),
+		tyrgin.NewRoute(grader.Status, ":subid/status", tyrgin.GET),
 	}
 
-	tyrgin.AddRoutes(server, nil, "1", "grader", graderEndpoints)
+	tyrgin.AddRoutes(server, false, nil, "1", "grader", graderEndpoints)
 
 	server.NoRoute(tyrgin.NotFound)
 
