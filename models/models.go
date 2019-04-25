@@ -43,4 +43,5 @@ type RequestData struct {
 	Submission   MongoSubmission `json:"submission"`
 	TestBuildCMD string          `json:"testBuildCMD"`
 	Tests        []Test          `json:"tests"`
+	Language     string          `json:"language"`
 }

@@ -45,6 +45,7 @@ func GetClient() (client *kubernetes.Clientset, err error) {
 func CreateJob(requestData models.RequestData) (newJob *batchv1.Job, err error) {
 	sub := requestData.Submission
 	tests := requestData.Tests
+	lang := requestData.Language
 
 	fmt.Printf("SUB: %+v\n", sub)
 	fmt.Printf("TESTS: %+v\n", tests)
@@ -78,8 +79,8 @@ func CreateJob(requestData models.RequestData) (newJob *batchv1.Job, err error) 
 					Containers: []apiv1.Container{
 						{
 							Name:    podName,
-							Image:   "ubuntu",
-							Command: []string{"env"},
+							Image:   fmt.Sprintf("robherley/brian-%s:%s", lang, os.Getenv("BRIAN_VERSION")),
+							Command: []string{"brian"},
 							SecurityContext: &apiv1.SecurityContext{
 								Privileged: &falseVal,
 							},
