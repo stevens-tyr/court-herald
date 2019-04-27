@@ -1,14 +1,10 @@
 #!/bin/bash
-
-echo "Type a tag for this build of court-herald:"
-echo -n "> "
-read tag
-
-img=robherley/court-herald:$tag
+GIT_HASH=$(git rev-parse --short HEAD)
+img=robherley/court-herald:$GIT_HASH
 echo Building $img:
-docker build -t $tag .
+docker build -t $img .
 echo Pushing $img:
-docker push $tag
+docker push $img
 
 while true; do
     read -p "Do you want to update the deployment? (y/n)" yn

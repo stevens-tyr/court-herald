@@ -86,7 +86,7 @@ func CreateJob(requestData models.RequestData) (newJob *batchv1.Job, err error) 
 							},
 							ImagePullPolicy: apiv1.PullPolicy(apiv1.PullIfNotPresent),
 							Env: []apiv1.EnvVar{
-								{Name: "API_URI", Value: os.Getenv("BACKEND_URL")},
+								{Name: "BACKEND_URL", Value: os.Getenv("BACKEND_URL")},
 								{Name: "SUB_ID", Value: sub.ID.Hex()},
 								{Name: "ASSIGN_ID", Value: sub.AssignmentID.Hex()},
 								{Name: "BUILD_CMD", Value: requestData.TestBuildCMD},

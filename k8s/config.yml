@@ -8,21 +8,24 @@ spec:
   selector:
     matchLabels:
       app: court-herald
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
         app: court-herald
     spec:
+      serviceAccountName: job-bot
       containers:
         - name: court-herald
-          image: robherley/court-herald:0.0.1
+          image: robherley/court-herald:e94b4df
           imagePullPolicy: 'Always'
           env:
-            - name: BACKEND_URL
-              value: 'plague-doctor-svc.default.svc.cluster.local:5000/api/v1/plague_doctor'
+            - name: ENV
+              value: 'production'
             - name: MONGO_URI
-              value: 'mongodb://mongo-0.mongo:27017'
+              value: 'mongo-0.mongo:27017'
+            - name: BACKEND_URL
+              value: 'http://plague-doctor-svc.default.svc.cluster.local:5555/api/v1/plague_doctor'
             - name: JWT_SECRET
               value: 'tyr-dev'
             - name: JWT_REALM
@@ -30,7 +33,7 @@ spec:
             - name: JOB_SECRET
               value: 'tyr-dev'
             - name: BRIAN_VERSION
-              value: '0.1.0'
+              value: 'c7e6fcc'
 ---
 apiVersion: v1
 kind: Service
