@@ -90,7 +90,7 @@ func CreateJob(requestData models.RequestData) (newJob *batchv1.Job, err error) 
 								{Name: "SUB_ID", Value: sub.ID.Hex()},
 								{Name: "ASSIGN_ID", Value: sub.AssignmentID.Hex()},
 								{Name: "BUILD_CMD", Value: requestData.TestBuildCMD},
-								{Name: "TEST_DATA", Value: string(testsBytes)},
+								{Name: "TESTS", Value: string(testsBytes)},
 								{Name: "JOB_SECRET", Value: os.Getenv("JOB_SECRET")},
 							},
 							VolumeMounts: []apiv1.VolumeMount{},

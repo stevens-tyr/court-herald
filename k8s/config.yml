@@ -33,7 +33,7 @@ spec:
             - name: JOB_SECRET
               value: 'tyr-dev'
             - name: BRIAN_VERSION
-              value: 'c7e6fcc'
+              value: 'debug-1'
 ---
 apiVersion: v1
 kind: Service
